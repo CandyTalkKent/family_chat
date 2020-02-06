@@ -12,12 +12,15 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
-import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.stereotype.Component;
 
-public class NettyServer {
+
+@Component
+public class NettyServer implements InitializingBean {
 
 
     public static void start() {
@@ -44,7 +47,7 @@ public class NettyServer {
                             }
                         }
                 );
-        bind(serverBootstrap, 8080);
+        bind(serverBootstrap, 8081);
     }
 
     public static void main(String[] args) {
@@ -62,5 +65,10 @@ public class NettyServer {
                 }
             }
         });
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        NettyServer.start();
     }
 }
