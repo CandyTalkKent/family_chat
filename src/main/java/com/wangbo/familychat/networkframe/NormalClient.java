@@ -14,7 +14,6 @@ public class NormalClient {
 
     public static byte[] getBytes(Packet packet) {
 
-//        int strLength = packet.toString().getBytes().length;
 
         int strLength = JSON.toJSONString(packet).getBytes().length;
 
@@ -32,12 +31,6 @@ public class NormalClient {
         myResBytes.add(JSON.toJSONString(packet).getBytes());
 
         return myResBytes.getBytes();
-    }
-
-    private void mapRes(byte[] res, byte[] source) {
-        for (byte b : source) {
-
-        }
     }
 
 
@@ -94,7 +87,6 @@ public class NormalClient {
             socket = new Socket("localhost", 8080);
             MessagePacket messagePacket = new MessagePacket();
             messagePacket.setMessage("hello  nihao");
-//            String s = JSON.toJSONString(messagePacket);
             byte[] bytes = getBytes(messagePacket);
             socket.getOutputStream().write(bytes);
         } catch (Exception ex) {

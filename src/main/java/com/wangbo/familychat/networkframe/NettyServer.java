@@ -1,13 +1,19 @@
 package com.wangbo.familychat.networkframe;
 
 import com.wangbo.familychat.networkframe.networkhandlers.ServerHandler;
+import com.wangbo.familychat.networkframe.networkhandlers.WebSocketServerHandler;
 import com.wangbo.familychat.networkframe.protocol.PacketDecoder;
 import com.wangbo.familychat.networkframe.protocol.PacketEncoder;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelPipeline;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.http.HttpObjectAggregator;
+import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
+import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 
@@ -26,13 +32,19 @@ public class NettyServer {
                         new ChannelInitializer<NioSocketChannel>() {
                             @Override
                             protected void initChannel(NioSocketChannel ch) throws Exception {
-                                ch.pipeline().addLast(new PacketDecoder());
-                                ch.pipeline().addLast(new ServerHandler());
-                                ch.pipeline().addLast(new PacketEncoder());
+                                ChannelPipeline pipeline = ch.pipeline();
+                                pipeline.addLast("http-codec", new HttpServerCodec());
+                                pipeline.addLast("aggregator", new HttpObjectAggregator(65536));
+                                pipeline.addLast("http-chunked", new ChunkedWriteHandler());
+                                pipeline.addLast("handler", new WebSocketServerHandler());
+
+                                pipeline.addLast(new PacketDecoder());
+                                pipeline.addLast(new ServerHandler());
+                                pipeline.addLast(new PacketEncoder());
                             }
                         }
                 );
-        bind(serverBootstrap,8080);
+        bind(serverBootstrap, 8080);
     }
 
     public static void main(String[] args) {
