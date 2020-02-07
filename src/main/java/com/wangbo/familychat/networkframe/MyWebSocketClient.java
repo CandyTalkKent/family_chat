@@ -9,6 +9,7 @@ import com.wangbo.familychat.networkframe.protocol.MessagePacket;
 import com.wangbo.familychat.networkframe.protocol.Packet;
 import org.java_websocket.WebSocket;
 import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.framing.Framedata;
 import org.java_websocket.handshake.ServerHandshake;
 
 public class MyWebSocketClient extends WebSocketClient{
@@ -31,6 +32,12 @@ public class MyWebSocketClient extends WebSocketClient{
         System.out.println("接收到消息："+paramString);
     }
 
+
+    @Override
+    public void onWebsocketMessageFragment(WebSocket conn, Framedata frame) {
+        super.onWebsocketMessageFragment(conn, frame);
+    }
+
     @Override
     public void onClose(int paramInt, String paramString, boolean paramBoolean) {
         System.out.println("关闭...");
@@ -44,7 +51,7 @@ public class MyWebSocketClient extends WebSocketClient{
 
     public static void main(String[] args) throws Exception{
         try {
-            MyWebSocketClient client = new MyWebSocketClient("ws://127.0.0.1:8080/websocket");
+            MyWebSocketClient client = new MyWebSocketClient("ws://127.0.0.1:8081/websocket");
             client.connect();
             while (!client.getReadyState().equals(WebSocket.READYSTATE.OPEN)) {
                 System.out.println("还没有打开");
@@ -61,7 +68,17 @@ public class MyWebSocketClient extends WebSocketClient{
                     "asdfasdfasfasdfasdfasfsdafasfasdfasdfasdfasdfasdfasfasdfasdfsafasdfasdfasdfasdfasdfadf  0000");
             byte[] bytes = getBytes(messagePacket);
 
-            client.send(bytes);
+            while (true){
+
+
+                client.send(bytes);
+
+                Thread.sleep(10000);
+            }
+
+
+
+//            client.onMessage();
 
 
 
@@ -80,16 +97,14 @@ public class MyWebSocketClient extends WebSocketClient{
         int strLength = JSON.toJSONString(packet).getBytes().length;
 
 
-        NormalClient.MyResBytes myResBytes = new NormalClient.MyResBytes(4 + 1 + 1 + 1 + 4 + strLength);
+        NormalClient.MyResBytes myResBytes = new NormalClient.MyResBytes(2 + strLength);
 
-        byte[] magicNumber = intToByte(0x123456);
-        byte[] lengthBytes = intToByte(strLength);
 
-        myResBytes.add(magicNumber);
-        myResBytes.add((byte) 1);
-        myResBytes.add((byte) 1);
+//        myResBytes.add(magicNumber);
+//        myResBytes.add((byte) 1);
+//        myResBytes.add((byte) 1);
+        myResBytes.add((byte)2);
         myResBytes.add(packet.getCommand());
-        myResBytes.add(lengthBytes);
         myResBytes.add(JSON.toJSONString(packet).getBytes());
 
         return myResBytes.getBytes();
