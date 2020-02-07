@@ -12,12 +12,10 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
             .getLogger(WebSocketServerHandler.class.getName());
 
 
-
-
     @Override
     public void channelRead0(ChannelHandlerContext ctx, Object msg)
             throws Exception {
-        WebSocketFrame frame = (WebSocketFrame)msg;
+        WebSocketFrame frame = (WebSocketFrame) msg;
         handlerWebSocketFrame(ctx, frame);
     }
 
@@ -27,8 +25,12 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
 
             WebSocketServerHandshaker handshaker = Constant.webSocketServerHandshakerMap.get(ctx.channel().id().asLongText());
 
-            handshaker.close(ctx.channel(),
-                    (CloseWebSocketFrame) frame.retain());
+            if (handshaker != null) {
+                handshaker.close(ctx.channel(),
+                        (CloseWebSocketFrame) frame.retain());
+                Constant.webSocketServerHandshakerMap.remove(ctx.channel().id().asLongText());
+            }
+
             return;
         }
         // ping请求
@@ -38,7 +40,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
         }
 
 
-        if (frame instanceof BinaryWebSocketFrame){
+        if (frame instanceof BinaryWebSocketFrame) {
             BinaryWebSocketFrame bf = (BinaryWebSocketFrame) frame;
             ctx.fireChannelRead(bf.retainedDuplicate().content());
         }

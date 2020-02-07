@@ -12,7 +12,6 @@ public class PacketCodeC {
 
     }
 
-    private static final int MAGIC_NUMBER = 0x123456;
 
     public Packet decode(ByteBuf bufIn) {
 
@@ -49,6 +48,9 @@ public class PacketCodeC {
         Class<? extends Packet> aClass = null;
         try {
             switch (command) {
+                case 1:
+                    aClass = LoginRequestPacket.class;
+                    break;
                 case 2:
                     aClass = MessagePacket.class;
                     break;
@@ -63,8 +65,7 @@ public class PacketCodeC {
 
 
     public byte[] encode(Packet packet) {
-// 1. 创建 ByteBuf 对象
-        // 2. 序列化 Java 对象
+
         byte[] bytes = Serializer.DEFAULT.serialize(packet);
 
         return  bytes;

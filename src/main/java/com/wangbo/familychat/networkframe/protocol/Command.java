@@ -4,4 +4,5 @@ public interface Command {
 
 
     byte MESSAGE = 2;
+    byte LOGIN_REQUEST = 1;
 }

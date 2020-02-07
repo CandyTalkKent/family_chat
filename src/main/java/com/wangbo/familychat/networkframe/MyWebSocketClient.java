@@ -5,14 +5,16 @@ import java.net.URISyntaxException;
 import java.util.Iterator;
 
 import com.alibaba.fastjson.JSON;
+import com.wangbo.familychat.networkframe.protocol.LoginRequestPacket;
 import com.wangbo.familychat.networkframe.protocol.MessagePacket;
 import com.wangbo.familychat.networkframe.protocol.Packet;
+import com.wangbo.familychat.pojo.User;
 import org.java_websocket.WebSocket;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.framing.Framedata;
 import org.java_websocket.handshake.ServerHandshake;
 
-public class MyWebSocketClient extends WebSocketClient{
+public class MyWebSocketClient extends WebSocketClient {
 
     public MyWebSocketClient(String url) throws URISyntaxException {
         super(new URI(url));
@@ -21,15 +23,15 @@ public class MyWebSocketClient extends WebSocketClient{
     @Override
     public void onOpen(ServerHandshake shake) {
         System.out.println("握手...");
-        for(Iterator<String> it=shake.iterateHttpFields();it.hasNext();) {
+        for (Iterator<String> it = shake.iterateHttpFields(); it.hasNext(); ) {
             String key = it.next();
-            System.out.println(key+":"+shake.getFieldValue(key));
+            System.out.println(key + ":" + shake.getFieldValue(key));
         }
     }
 
     @Override
     public void onMessage(String paramString) {
-        System.out.println("接收到消息："+paramString);
+        System.out.println("接收到消息：" + paramString);
     }
 
 
@@ -45,11 +47,11 @@ public class MyWebSocketClient extends WebSocketClient{
 
     @Override
     public void onError(Exception e) {
-        System.out.println("异常"+e);
+        System.out.println("异常" + e);
 
     }
 
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
         try {
             MyWebSocketClient client = new MyWebSocketClient("ws://127.0.0.1:8081/websocket");
             client.connect();
@@ -59,28 +61,26 @@ public class MyWebSocketClient extends WebSocketClient{
             }
             System.out.println("建立websocket连接");
 
-            MessagePacket messagePacket = new MessagePacket();
-            messagePacket.setMessage("hello  nihaoddddsdadsssssssssseewefasdfasdfasdfsadfsadfsadfsadfsdafasdfsadf" +
-                    "adfasdfsadfsadfsadfsadfsadfsadfsdfsaasdfasdfasdaedfasdftyjyhrhjryhrtyhrt" +
-                    "rthrthrthrthrthrthrthrthrthrthrthrth" +
-                    "rthrthtrhrhreth" +
-                    "ergergegfasdfadfasdfasdfasdfasdfasdf" +
-                    "asdfasdfasfasdfasdfasfsdafasfasdfasdfasdfasdfasdfasfasdfasdfsafasdfasdfasdfasdfasdfadf  0000");
-            byte[] bytes = getBytes(messagePacket);
+            login(client);
 
-            while (true){
+//           while (true){
+//               sendMessage(client);
+//               Thread.sleep(100000000);
+//           }
 
 
-                client.send(bytes);
-
-                Thread.sleep(10000);
+            try {
+                Thread.sleep(6000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
 
-
-
-//            client.onMessage();
-
-
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    sendMessage(client);
+                }
+            }).start();
 
 
         } catch (URISyntaxException e) {
@@ -88,7 +88,35 @@ public class MyWebSocketClient extends WebSocketClient{
         }
     }
 
+    private static void login(MyWebSocketClient client) {
+        LoginRequestPacket loginRequestPacket = new LoginRequestPacket();
+        loginRequestPacket.setPassword("2121");
+        byte[] bytes = getBytes(loginRequestPacket);
+        client.send(bytes);
+    }
 
+    private static void sendMessage(MyWebSocketClient client) {
+
+        MessagePacket messagePacket = new MessagePacket();
+        messagePacket.setMessage("hello  nihaoddddsdadsssssssssseewefasdfasdfasdfsadfsadfsadfsadfsdafasdfsadf" +
+                "adfasdfsadfsadfsadfsadfsadfsadfsdfsaasdfasdfasdaedfasdftyjyhrhjryhrtyhrt" +
+                "rthrthrthrthrthrthrthrthrthrthrthrth" +
+                "rthrthtrhrhreth" +
+                "ergergegfasdfadfasdfasdfasdfasdfasdf" +
+                "asdfasdfasfasdfasdfasfsdafasfasdfasdfasdfasdfasdfasfasdfasdfsafasdfasdfasdfasdfasdfadf  0000");
+        User user = new User();
+        user.setUserId(0l);
+
+        messagePacket.setToUser(user);
+        byte[] bytes = getBytes(messagePacket);
+
+
+        client.send(bytes);
+
+
+
+
+    }
 
 
     public static byte[] getBytes(Packet packet) {
@@ -100,11 +128,8 @@ public class MyWebSocketClient extends WebSocketClient{
         NormalClient.MyResBytes myResBytes = new NormalClient.MyResBytes(2 + strLength);
 
 
-//        myResBytes.add(magicNumber);
-//        myResBytes.add((byte) 1);
-//        myResBytes.add((byte) 1);
-        myResBytes.add((byte)2);
         myResBytes.add(packet.getCommand());
+        myResBytes.add((byte) 1);
         myResBytes.add(JSON.toJSONString(packet).getBytes());
 
         return myResBytes.getBytes();
@@ -139,7 +164,7 @@ public class MyWebSocketClient extends WebSocketClient{
             return count;
         }
 
-        public byte[] getBytes(){
+        public byte[] getBytes() {
             return this.bytes;
         }
     }

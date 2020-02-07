@@ -1,8 +1,6 @@
 package com.wangbo.familychat.networkframe;
 
-import com.wangbo.familychat.networkframe.networkhandlers.HttpRequestHandler;
-import com.wangbo.familychat.networkframe.networkhandlers.ServerHandler;
-import com.wangbo.familychat.networkframe.networkhandlers.WebSocketServerHandler;
+import com.wangbo.familychat.networkframe.networkhandlers.*;
 import com.wangbo.familychat.networkframe.protocol.PacketDecoder;
 import com.wangbo.familychat.networkframe.protocol.PacketEncoder;
 import io.netty.bootstrap.ServerBootstrap;
@@ -26,7 +24,7 @@ public class NettyServer implements InitializingBean {
 
 
     public static void start() {
-         ChannelFuture serverChannelFuture;
+        ChannelFuture serverChannelFuture;
         NioEventLoopGroup workers = new NioEventLoopGroup();
         NioEventLoopGroup boss = new NioEventLoopGroup();
 
@@ -39,14 +37,16 @@ public class NettyServer implements InitializingBean {
                             @Override
                             protected void initChannel(NioSocketChannel ch) throws Exception {
                                 ChannelPipeline pipeline = ch.pipeline();
-                               pipeline.addLast("http-codec", new HttpServerCodec());
-                               pipeline.addLast("aggregator", new HttpObjectAggregator(65536));
-                               pipeline.addLast("http-chunked", new ChunkedWriteHandler());
+                                pipeline.addLast("http-codec", new HttpServerCodec());
+                                pipeline.addLast("aggregator", new HttpObjectAggregator(65536));
+                                pipeline.addLast("http-chunked", new ChunkedWriteHandler());
                                 ch.pipeline().addLast("http-handler", new HttpRequestHandler());
-                                ch.pipeline().addLast("websocket-handler",new WebSocketServerHandler());
+                                ch.pipeline().addLast("websocket-handler", new WebSocketServerHandler());
 
                                 pipeline.addLast(new PacketDecoder());
-                                pipeline.addLast(new ServerHandler());
+                                pipeline.addLast(new LoginRequestHandler());
+                                pipeline.addLast(new AuthHandler());
+                                pipeline.addLast(new MessagePacketHandler());
                                 pipeline.addLast(new PacketEncoder());
 
                             }
