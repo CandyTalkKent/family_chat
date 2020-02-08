@@ -5,9 +5,9 @@ import java.net.URISyntaxException;
 import java.util.Iterator;
 
 import com.alibaba.fastjson.JSON;
-import com.wangbo.familychat.networkframe.protocol.LoginRequestPacket;
-import com.wangbo.familychat.networkframe.protocol.MessagePacket;
-import com.wangbo.familychat.networkframe.protocol.Packet;
+import com.wangbo.familychat.networkframe.protocol.packet.LoginRequestPacket;
+import com.wangbo.familychat.networkframe.protocol.packet.MessagePacket;
+import com.wangbo.familychat.networkframe.protocol.packet.Packet;
 import com.wangbo.familychat.pojo.User;
 import org.java_websocket.WebSocket;
 import org.java_websocket.client.WebSocketClient;
@@ -90,6 +90,9 @@ public class MyWebSocketClient extends WebSocketClient {
 
     private static void login(MyWebSocketClient client) {
         LoginRequestPacket loginRequestPacket = new LoginRequestPacket();
+        User user = new User();
+        user.setPhone("12345");
+        loginRequestPacket.setUser(user);
         loginRequestPacket.setPassword("2121");
         byte[] bytes = getBytes(loginRequestPacket);
         client.send(bytes);

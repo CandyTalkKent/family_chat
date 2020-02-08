@@ -1,4 +1,4 @@
-package com.wangbo.familychat.networkframe.protocol;
+package com.wangbo.familychat.networkframe.protocol.packet;
 
 public abstract class Packet {
 

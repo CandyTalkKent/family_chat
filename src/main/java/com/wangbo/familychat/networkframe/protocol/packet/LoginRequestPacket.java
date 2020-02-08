@@ -1,5 +1,7 @@
-package com.wangbo.familychat.networkframe.protocol;
+package com.wangbo.familychat.networkframe.protocol.packet;
 
+import com.wangbo.familychat.networkframe.protocol.Command;
+import com.wangbo.familychat.networkframe.protocol.packet.Packet;
 import com.wangbo.familychat.pojo.User;
 import lombok.Data;
 

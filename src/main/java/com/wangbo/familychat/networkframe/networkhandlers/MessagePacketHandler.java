@@ -1,7 +1,7 @@
 package com.wangbo.familychat.networkframe.networkhandlers;
 
 import com.wangbo.familychat.common.Constant;
-import com.wangbo.familychat.networkframe.protocol.MessagePacket;
+import com.wangbo.familychat.networkframe.protocol.packet.MessagePacket;
 import com.wangbo.familychat.pojo.User;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -18,7 +18,6 @@ public class MessagePacketHandler extends SimpleChannelInboundHandler<MessagePac
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, MessagePacket messagePacket) throws Exception {
 
-        logger.info("message packet info message:{}", messagePacket.getMessage());
 
         User toUser = messagePacket.getToUser();
 
@@ -34,7 +33,6 @@ public class MessagePacketHandler extends SimpleChannelInboundHandler<MessagePac
 
 
         for (ChannelHandlerContext context : toUserChannels) {
-//            context.writeAndFlush(messagePacket);
             context.channel().writeAndFlush(messagePacket);
         }
 

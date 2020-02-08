@@ -1,8 +1,8 @@
 package com.wangbo.familychat.networkframe;
 
 import com.alibaba.fastjson.JSON;
-import com.wangbo.familychat.networkframe.protocol.MessagePacket;
-import com.wangbo.familychat.networkframe.protocol.Packet;
+import com.wangbo.familychat.networkframe.protocol.packet.MessagePacket;
+import com.wangbo.familychat.networkframe.protocol.packet.Packet;
 
 import java.io.IOException;
 import java.io.OutputStream;

@@ -16,6 +16,18 @@ public class User {
      */
     private String userName;
 
+
+    /**
+     * 密码
+     */
+    private String password;
+
+
+    /**
+     * 电话
+     */
+    private String phone;
+
     /**
      * 用户昵称
      */
