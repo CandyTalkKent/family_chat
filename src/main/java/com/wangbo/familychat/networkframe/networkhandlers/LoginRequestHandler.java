@@ -33,7 +33,7 @@ public class LoginRequestHandler extends SimpleChannelInboundHandler<LoginReques
 
         User userFromDb = getUserFromDb(userFromClient.getPhone());
         if (userFromDb == null) {
-            ctx.channel().writeAndFlush(ResultData.fail("找不到用户"));
+            ctx.channel().writeAndFlush(ResultData.fail("没有此用户,请重新输入手机号"));
             return;
         }
 
@@ -41,7 +41,8 @@ public class LoginRequestHandler extends SimpleChannelInboundHandler<LoginReques
 
         //从数据库获取用户的密码与之匹配
         if (!validatePassword(userFromDb.getPassword(), password)) {
-            //登陆失败 todo
+            ctx.channel().writeAndFlush(ResultData.fail("密码错误，请重新输入"));
+            return;
         }
         //登陆成功
         //标记这条channel已经登陆
