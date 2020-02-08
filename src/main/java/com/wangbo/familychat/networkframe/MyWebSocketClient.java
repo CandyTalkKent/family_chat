@@ -91,7 +91,7 @@ public class MyWebSocketClient extends WebSocketClient {
     private static void login(MyWebSocketClient client) {
         LoginRequestPacket loginRequestPacket = new LoginRequestPacket();
         User user = new User();
-        user.setPhone("12345");
+        user.setPhone("13052251169");
         loginRequestPacket.setUser(user);
         loginRequestPacket.setPassword("2121");
         byte[] bytes = getBytes(loginRequestPacket);

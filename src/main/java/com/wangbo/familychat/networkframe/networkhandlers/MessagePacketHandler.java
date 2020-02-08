@@ -8,11 +8,15 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
+@Component
 public class MessagePacketHandler extends SimpleChannelInboundHandler<MessagePacket> {
+
+
 
     Logger logger = LoggerFactory.getLogger(MessagePacketHandler.class);
 

@@ -2,19 +2,29 @@ package com.wangbo.familychat.networkframe.networkhandlers;
 
 import com.wangbo.familychat.common.Constant;
 import com.wangbo.familychat.common.ResultData;
+import com.wangbo.familychat.dao.entity.User;
 import com.wangbo.familychat.networkframe.protocol.packet.LoginRequestPacket;
 import com.wangbo.familychat.networkframe.protocol.packet.LoginResponsePacket;
-import com.wangbo.familychat.dao.entity.User;
+import com.wangbo.familychat.services.impl.IUserService;
 import com.wangbo.familychat.utils.LoginUtils;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class LoginRequestHandler extends SimpleChannelInboundHandler<LoginRequestPacket> {
+@Component
+public class LoginRequestHandler extends SimpleChannelInboundHandler<LoginRequestPacket> implements ApplicationContextAware {
+
+
+    private static IUserService userService;
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, LoginRequestPacket loginRequestPacket) throws Exception {
@@ -22,6 +32,10 @@ public class LoginRequestHandler extends SimpleChannelInboundHandler<LoginReques
 
 
         User userFromDb = getUserFromDb(userFromClient.getPhone());
+        if (userFromDb == null) {
+            ctx.channel().writeAndFlush(ResultData.fail("找不到用户"));
+            return;
+        }
 
         final String password = loginRequestPacket.getPassword();
 
@@ -53,7 +67,7 @@ public class LoginRequestHandler extends SimpleChannelInboundHandler<LoginReques
         loginResponsePacket.setDevice("");
         loginResponsePacket.setLoginTime(new Date());
 
-        ctx.channel().writeAndFlush(ResultData.success(loginRequestPacket));
+        ctx.channel().writeAndFlush(ResultData.success(loginResponsePacket));
 
 
     }
@@ -61,14 +75,22 @@ public class LoginRequestHandler extends SimpleChannelInboundHandler<LoginReques
     private User getUserFromDb(String phone) {
 
         // todo
-
-        User user = new User();
-        user.setUserId(0l);
+        User user = userService.getUserFromDbWithPhone(phone);
         return user;
     }
 
     private boolean validatePassword(String passwordFromDb, String password) {
+        if (StringUtils.isEmpty(passwordFromDb) || StringUtils.isEmpty(password)) {
+            return false;
+        }
 
-        return true;
+        return passwordFromDb.equals(password);
+    }
+
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        IUserService bean = applicationContext.getBean(IUserService.class);
+        LoginRequestHandler.userService = bean;
     }
 }

@@ -47,4 +47,17 @@ public class User {
      * 用户家乡
      */
     private String homeTown;
+
+    public static User build(TUserInfo tUserInfo) {
+        User user = new User();
+        user.setUserId(tUserInfo.getUserId());
+        user.setPhone(tUserInfo.getPhone());
+        user.setAddress(tUserInfo.getAddress());
+        user.setEmail(tUserInfo.getEmail());
+        user.setHomeTown(tUserInfo.getHometown());
+        user.setPassword(tUserInfo.getPassword());
+        user.setUserName(tUserInfo.getUserName());
+        user.setUserNickName(tUserInfo.getUserNickName());
+        return user;
+    }
 }
