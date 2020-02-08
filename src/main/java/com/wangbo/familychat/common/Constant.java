@@ -1,6 +1,6 @@
 package com.wangbo.familychat.common;
 
-import com.wangbo.familychat.pojo.User;
+import com.wangbo.familychat.dao.entity.User;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
 

@@ -1,4 +1,4 @@
-package com.wangbo.familychat.pojo;
+package com.wangbo.familychat.dao.entity;
 
 
 import lombok.Data;

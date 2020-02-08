@@ -1,6 +1,6 @@
 package com.wangbo.familychat.networkframe.protocol.packet;
 
-import com.wangbo.familychat.pojo.User;
+import com.wangbo.familychat.dao.entity.User;
 import lombok.Data;
 
 import java.util.Date;

@@ -8,7 +8,7 @@ import com.alibaba.fastjson.JSON;
 import com.wangbo.familychat.networkframe.protocol.packet.LoginRequestPacket;
 import com.wangbo.familychat.networkframe.protocol.packet.MessagePacket;
 import com.wangbo.familychat.networkframe.protocol.packet.Packet;
-import com.wangbo.familychat.pojo.User;
+import com.wangbo.familychat.dao.entity.User;
 import org.java_websocket.WebSocket;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.framing.Framedata;

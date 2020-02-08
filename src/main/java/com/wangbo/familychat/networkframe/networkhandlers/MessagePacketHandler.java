@@ -1,8 +1,9 @@
 package com.wangbo.familychat.networkframe.networkhandlers;
 
 import com.wangbo.familychat.common.Constant;
+import com.wangbo.familychat.common.ResultData;
 import com.wangbo.familychat.networkframe.protocol.packet.MessagePacket;
-import com.wangbo.familychat.pojo.User;
+import com.wangbo.familychat.dao.entity.User;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
@@ -33,7 +34,7 @@ public class MessagePacketHandler extends SimpleChannelInboundHandler<MessagePac
 
 
         for (ChannelHandlerContext context : toUserChannels) {
-            context.channel().writeAndFlush(messagePacket);
+            context.channel().writeAndFlush(ResultData.success(messagePacket));
         }
 
 //
