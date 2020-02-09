@@ -1,6 +1,7 @@
 package com.wangbo.familychat.networkframe.networkhandlers;
 
 import com.wangbo.familychat.common.Constant;
+import com.wangbo.familychat.common.ResponseType;
 import com.wangbo.familychat.common.ResultData;
 import com.wangbo.familychat.networkframe.protocol.packet.MessagePacket;
 import com.wangbo.familychat.dao.entity.User;
@@ -38,7 +39,7 @@ public class MessagePacketHandler extends SimpleChannelInboundHandler<MessagePac
 
 
         for (ChannelHandlerContext context : toUserChannels) {
-            context.channel().writeAndFlush(ResultData.success(messagePacket));
+            context.channel().writeAndFlush(ResultData.success(messagePacket, ResponseType.MESSAGE_SUCCESS));
         }
 
 //

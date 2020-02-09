@@ -1,6 +1,7 @@
 package com.wangbo.familychat.networkframe.networkhandlers;
 
 import com.wangbo.familychat.common.Constant;
+import com.wangbo.familychat.common.ResponseType;
 import com.wangbo.familychat.common.ResultData;
 import com.wangbo.familychat.dao.entity.User;
 import com.wangbo.familychat.networkframe.protocol.packet.LoginRequestPacket;
@@ -68,7 +69,7 @@ public class LoginRequestHandler extends SimpleChannelInboundHandler<LoginReques
         loginResponsePacket.setDevice("");
         loginResponsePacket.setLoginTime(new Date());
 
-        ctx.channel().writeAndFlush(ResultData.success(loginResponsePacket));
+        ctx.channel().writeAndFlush(ResultData.success(loginResponsePacket, ResponseType.LOGIN_SUCCESS));
 
 
     }

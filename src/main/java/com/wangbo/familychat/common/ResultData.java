@@ -28,11 +28,11 @@ public class ResultData<T> {
      */
     private String type;
 
-    public static <T> ResultData<T> success(T data){
+    public static <T> ResultData<T> success(T data,ResponseType responseType){
         ResultData<T> res = new ResultData<>();
         res.setData(data);
-        res.setMessage("login success");
-        res.setType("1");
+        res.setMessage(responseType.getMessage());
+        res.setType(responseType.getType());
         res.setResCode("200");
         return res;
     }

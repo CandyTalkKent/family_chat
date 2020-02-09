@@ -2,7 +2,9 @@ package com.wangbo.familychat.dao;
 
 import com.wangbo.familychat.dao.entity.TUserInfo;
 import com.wangbo.familychat.dao.entity.TUserInfoExample;
+
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -95,4 +97,7 @@ public interface TUserInfoMapper {
      * @mbggenerated
      */
     int updateByPrimaryKey(TUserInfo record);
+
+
+    List<TUserInfo> batchSelectByUserId(@Param("list") List<Long> list);
 }
