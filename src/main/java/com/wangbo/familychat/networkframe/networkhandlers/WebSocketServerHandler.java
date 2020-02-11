@@ -1,15 +1,17 @@
 package com.wangbo.familychat.networkframe.networkhandlers;
 
-import com.wangbo.familychat.common.Constant;
+import com.wangbo.familychat.common.ChannelUserMapConstant;
+import com.wangbo.familychat.utils.LoginUtils;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.websocketx.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.logging.Logger;
+import java.util.List;
 
 public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> {
-    private static final Logger logger = Logger
-            .getLogger(WebSocketServerHandler.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(WebSocketServerHandler.class);
 
 
     @Override
@@ -19,16 +21,19 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
         handlerWebSocketFrame(ctx, frame);
     }
 
+
+
+
     private void handlerWebSocketFrame(ChannelHandlerContext ctx, WebSocketFrame frame) throws Exception {
         // 关闭请求
         if (frame instanceof CloseWebSocketFrame) {
 
-            WebSocketServerHandshaker handshaker = Constant.webSocketServerHandshakerMap.get(ctx.channel().id().asLongText());
+            WebSocketServerHandshaker handshaker = ChannelUserMapConstant.webSocketServerHandshakerMap.get(ctx.channel().id().asLongText());
 
             if (handshaker != null) {
                 handshaker.close(ctx.channel(),
                         (CloseWebSocketFrame) frame.retain());
-                Constant.webSocketServerHandshakerMap.remove(ctx.channel().id().asLongText());
+                ChannelUserMapConstant.webSocketServerHandshakerMap.remove(ctx.channel().id().asLongText());
             }
 
             return;

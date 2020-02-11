@@ -1,6 +1,6 @@
 package com.wangbo.familychat.networkframe.networkhandlers;
 
-import com.wangbo.familychat.common.Constant;
+import com.wangbo.familychat.common.ChannelUserMapConstant;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
@@ -43,7 +43,7 @@ public class HttpRequestHandler extends SimpleChannelInboundHandler<Object> {
         WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(
                 "ws:/" + ctx.channel() + "/websocket", null, false);
         WebSocketServerHandshaker handshaker = wsFactory.newHandshaker(req);
-        Constant.webSocketServerHandshakerMap.put(ctx.channel().id().asLongText(), handshaker);
+        ChannelUserMapConstant.webSocketServerHandshakerMap.put(ctx.channel().id().asLongText(), handshaker);
         if (handshaker == null) {
             WebSocketServerHandshakerFactory.sendUnsupportedVersionResponse(ctx.channel());
         } else {

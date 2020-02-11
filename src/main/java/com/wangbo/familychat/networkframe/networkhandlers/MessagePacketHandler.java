@@ -1,6 +1,6 @@
 package com.wangbo.familychat.networkframe.networkhandlers;
 
-import com.wangbo.familychat.common.Constant;
+import com.wangbo.familychat.common.ChannelUserMapConstant;
 import com.wangbo.familychat.common.ResponseType;
 import com.wangbo.familychat.common.ResultData;
 import com.wangbo.familychat.networkframe.protocol.packet.MessagePacket;
@@ -28,7 +28,7 @@ public class MessagePacketHandler extends SimpleChannelInboundHandler<MessagePac
         User toUser = messagePacket.getToUser();
 
         //获取消息接受者的所有连接对象
-        List<ChannelHandlerContext> toUserChannels = Constant.channelMap.get(toUser.getUserId());
+        List<ChannelHandlerContext> toUserChannels = ChannelUserMapConstant.channelMap.get(toUser.getUserId());
 
 
         if (CollectionUtils.isEmpty(toUserChannels)) {//消息接受者未登陆
