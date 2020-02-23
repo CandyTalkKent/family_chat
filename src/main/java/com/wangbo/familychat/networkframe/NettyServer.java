@@ -13,6 +13,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.stream.ChunkedWriteHandler;
+import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import org.springframework.beans.factory.InitializingBean;
@@ -42,7 +43,7 @@ public class NettyServer implements InitializingBean {
                                 pipeline.addLast("http-chunked", new ChunkedWriteHandler());
                                 ch.pipeline().addLast("http-handler", new HttpRequestHandler());
                                 ch.pipeline().addLast("websocket-handler", new WebSocketServerHandler());
-
+                                pipeline.addLast(new IMIdleStateHandler());
                                 pipeline.addLast(new PacketDecoder());
                                 pipeline.addLast(new LoginRequestHandler());
                                 pipeline.addLast(new AuthHandler());

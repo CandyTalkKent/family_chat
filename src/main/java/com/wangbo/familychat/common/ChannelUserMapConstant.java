@@ -30,8 +30,11 @@ public class ChannelUserMapConstant {
     public static  final  Map<ChannelHandlerContext,Long> channelToUserIdMap = new ConcurrentHashMap<>();
 
 
-
-
+    /**
+     * 添加channel 和 user的映射关系
+     * @param ctx
+     * @param user
+     */
     public static  void mapUserIdAndChannel(ChannelHandlerContext ctx, User user){
 
         List<ChannelHandlerContext> userChannelList = ChannelUserMapConstant.channelMap.get(user.getUserId());
@@ -47,6 +50,32 @@ public class ChannelUserMapConstant {
 
             userChannelList.add(ctx);
         }
+    }
+
+    /**
+     * 删除channel和user的映射关系
+     */
+    public  static  void deleteUserAndChannelMap(ChannelHandlerContext ctx){
+
+        Long userId = ChannelUserMapConstant.channelToUserIdMap.get(ctx);
+
+
+        //删除连接的映射关系
+        List<ChannelHandlerContext> channelHandlerContexts = ChannelUserMapConstant.channelMap.get(userId);
+        try {
+            ChannelUserMapConstant.channelToUserIdMap.remove(ctx);
+            channelHandlerContexts.remove(ctx);
+
+            WebSocketServerHandshaker handshaker = ChannelUserMapConstant.webSocketServerHandshakerMap.get(ctx.channel().id().asLongText());
+
+            if (handshaker != null) {
+                ChannelUserMapConstant.webSocketServerHandshakerMap.remove(ctx.channel().id().asLongText());
+            }
+        } catch (Exception e) {
+           //todo
+        }
+
+
     }
 
 

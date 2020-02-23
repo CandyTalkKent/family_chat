@@ -40,12 +40,10 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
         }
         // ping请求
         if (frame instanceof PingWebSocketFrame) {
-            ctx.channel().write(new PongWebSocketFrame(frame.content().retain()));
-            return;
-        }
-
-
-        if (frame instanceof BinaryWebSocketFrame) {
+            logger.info("客户端发来的PingWebSocketFrame 心跳包");
+//            ctx.channel().write(new PongWebSocketFrame(frame.content().retain()));
+            ctx.fireChannelRead(frame.retainedDuplicate().content());
+        }else if (frame instanceof BinaryWebSocketFrame) {
             BinaryWebSocketFrame bf = (BinaryWebSocketFrame) frame;
             ctx.fireChannelRead(bf.retainedDuplicate().content());
         }

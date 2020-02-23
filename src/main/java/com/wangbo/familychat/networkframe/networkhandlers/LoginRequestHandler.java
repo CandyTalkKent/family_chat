@@ -10,9 +10,6 @@ import com.wangbo.familychat.services.impl.IUserService;
 import com.wangbo.familychat.utils.LoginUtils;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -20,44 +17,26 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.util.Date;
-import java.util.List;
 
 @Component
 public class LoginRequestHandler extends SimpleChannelInboundHandler<LoginRequestPacket> implements ApplicationContextAware {
 
-    Logger logger = LoggerFactory.getLogger(LoginRequestHandler.class);
     private static IUserService userService;
 
 
-    //退出登陆逻辑
-    @Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        if (LoginUtils.hasLogin(ctx.channel())) {//用户已经登陆
-            //下线
-            Long userId = ChannelUserMapConstant.channelToUserIdMap.get(ctx);
+//    //退出登陆逻辑
+//    @Override
+//    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+//        if (LoginUtils.hasLogin(ctx.channel())) {//用户已经登陆
+//            //下线
+//            ChannelUserMapConstant.deleteUserAndChannelMap(ctx);
+//            //channel close
+//            ctx.channel().close();
+//
+//            logger.info("连接成功关闭！");
+//        }
+//    }
 
-
-            //删除连接的映射关系
-            List<ChannelHandlerContext> channelHandlerContexts = ChannelUserMapConstant.channelMap.get(userId);
-            try {
-                ChannelUserMapConstant.channelToUserIdMap.remove(ctx);
-                channelHandlerContexts.remove(ctx);
-
-                WebSocketServerHandshaker handshaker = ChannelUserMapConstant.webSocketServerHandshakerMap.get(ctx.channel().id().asLongText());
-
-                if (handshaker != null) {
-                    ChannelUserMapConstant.webSocketServerHandshakerMap.remove(ctx.channel().id().asLongText());
-                }
-            } catch (Exception e) {
-                logger.error("关闭连接错误 userid:{}", userId);
-            }
-
-            //channel close
-            ctx.channel().close();
-
-            logger.info("连接成功关闭！");
-        }
-    }
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, LoginRequestPacket loginRequestPacket) throws Exception {
         User userFromClient = loginRequestPacket.getUser();
@@ -94,6 +73,9 @@ public class LoginRequestHandler extends SimpleChannelInboundHandler<LoginReques
 
         ctx.channel().writeAndFlush(ResultData.success(loginResponsePacket, ResponseType.LOGIN_SUCCESS));
 
+
+        //todo 登陆成功后接受离线的时候收到的消息
+//        ctx.channel().writeAndFlush("aa");
 
     }
 
